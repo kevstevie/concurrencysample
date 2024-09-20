@@ -10,24 +10,17 @@ class DepositService(
     private val concurrencyManager: ConcurrencyManager
 ) {
 
-    fun add(id: Long, amount: Long) {
-        concurrencyManager.getLock { add(id, amount) }
+    fun update(id: Long, amount: Long) {
+        concurrencyManager.getLock { update(id, amount) }
         val money = moneyRepository.findById(id)
 
-        money.add(amount)
+        money.update(amount)
 
         moneyRepository.save(money)
         concurrencyManager.release()
     }
 
-    fun withdraw(id: Long, amount: Long) {
-        concurrencyManager.getLock { withdraw(id, amount) }
-        val money = moneyRepository.findById(id)
-
-        money.withdraw(amount)
-
-
-        moneyRepository.save(money)
-        concurrencyManager.release()
+    fun getMoney(id: Long): Money {
+        return moneyRepository.findById(id)
     }
 }

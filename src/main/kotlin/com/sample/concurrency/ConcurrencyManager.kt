@@ -1,6 +1,5 @@
 package com.sample.concurrency
 
-import org.springframework.dao.ConcurrencyFailureException
 import org.springframework.stereotype.Component
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -12,12 +11,11 @@ class ConcurrencyManager(private val jobQueue: JobQueue) {
     fun getLock(job: Runnable) {
         if (flag.compareAndSet(false, true).not()) {
             jobQueue.offerJob(job)
-            throw ConcurrencyFailureException("Concurrent access")
+            throw IllegalStateException("Concurrent access")
         }
     }
 
     fun release() {
         flag.set(false)
-        jobQueue.release()
     }
 }

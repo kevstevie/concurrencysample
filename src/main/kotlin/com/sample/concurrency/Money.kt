@@ -9,12 +9,8 @@ class Money(
     var money: Long
 ) {
 
-    fun add(amount: Long) {
+    fun update(amount: Long) {
+        require(money + amount >= 0)
         money += amount
-    }
-
-    fun withdraw(amount: Long) {
-        require(money >= amount)
-        money -= amount
     }
 }
