@@ -38,4 +38,30 @@ class ConcurrencyTest(
         val updatedMoney = moneyRepository.findById(money.id)
         assertThat(updatedMoney.money).isEqualTo(100L * count)
     }
+
+    @RepeatedTest(50)
+    fun 동시_출금시_0아래로_내려가지_않음() {
+        val count = 5
+        val threadPool = Executors.newFixedThreadPool(count)
+        val latch = CountDownLatch(count)
+        val money = moneyRepository.save(Money(money = 1000))
+
+        for (i in 1..count) {
+            try {
+                threadPool.execute {
+                    depositService.update(money.id, -200)
+                }
+            } catch (e: Exception) {
+
+            } finally {
+                latch.countDown()
+            }
+        }
+
+        latch.await()
+        Thread.sleep(500)
+        threadPool.shutdown()
+        val updatedMoney = moneyRepository.findById(money.id)
+        assertThat(updatedMoney.money).isEqualTo(0)
+    }
 }
