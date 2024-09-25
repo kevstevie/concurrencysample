@@ -11,7 +11,8 @@ class DepositService(
 ) {
 
     fun update(id: Long, amount: Long) {
-        concurrencyManager.getLock { update(id, amount) }
+        while (concurrencyManager.getLock().not()) {
+        }
         val money = moneyRepository.findById(id)
 
         money.update(amount)
