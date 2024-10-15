@@ -1,5 +1,6 @@
 package com.sample.concurrency
 
+import com.sample.concurrency.manager.ConcurrencyManager
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 

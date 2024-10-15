@@ -1,18 +1,19 @@
-package com.sample.concurrency
+package com.sample.concurrency.manager
 
+import com.sample.concurrency.JobQueue
 import org.springframework.stereotype.Component
 import java.util.concurrent.atomic.AtomicBoolean
 
 @Component
-class ConcurrencyManager(private val jobQueue: JobQueue) {
+class MemoryConcurrencyManager(private val jobQueue: JobQueue) : ConcurrencyManager {
 
     private val flag: AtomicBoolean = AtomicBoolean(false)
 
-    fun getLock(): Boolean {
+    override fun getLock(): Boolean {
         return flag.compareAndSet(false, true)
     }
 
-    fun release() {
+    override fun release() {
         flag.set(false)
     }
 }
